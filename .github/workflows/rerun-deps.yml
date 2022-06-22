@@ -1,0 +1,17 @@
+name: Rerun Dependencies Test
+on: workflow_dispatch
+jobs:
+  prep:
+    runs-on: ubuntu-latest
+    outputs:
+      uuid: ${{ steps.generate-uuid.outputs.uuid }}
+    steps:
+      - id: generate-uuid
+        run: echo "::set-output name=uuid::$( uuidgen )"
+
+  job:
+    runs-on: ubuntu-latest
+    needs: [prep]
+    steps:
+      - run: echo "::notice::RUN-ATTEMPT=${{ github.run_attempt }}, UUID=${{ needs.prep.outputs.uuid }}"
+      - run: false # Deliberately fail job
